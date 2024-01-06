@@ -1,0 +1,25 @@
+{
+  "name": "express-demo",
+  "version": "1.0.0",
+  "description": "Node, Express and MongoDB  assignments",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node",
+    "mongoDB",
+    "express",
+    "backend",
+    "mongoose",
+    "routing",
+    "REST",
+    "API",
+    "HTTP"
+  ],
+  "author": "Pranav",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
