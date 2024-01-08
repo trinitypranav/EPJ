@@ -5,4 +5,7 @@ app.get("/", (req, res) => {
   res.send("Hello, Welcome to Express Demo app");
 });
 
-app.listen(8080, () => console.log("Express-demo is listening on port 8080"));
+const port = process.env.PORT || 3000;
+app.listen(port, () =>
+  console.log(`Express-demo is listening on port ${port}`)
+);
