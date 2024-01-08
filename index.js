@@ -65,6 +65,15 @@ app.put("/api/courses/:id", (req, res) => {
   res.status(200).send(`Course with ID ${id} has been updated`);
 });
 
+app.delete("/api/courses/:id", (req, res) => {
+  const id = req.params.id;
+  const courseIndex = courses.findIndex((course) => course.id === parseInt(id));
+  if (courseIndex === -1)
+    return res.status(404).send(`Course with ID ${id} was not found`);
+
+  res.status(200).send(courses.splice(courseIndex, 1));
+});
+
 const port = process.env.PORT || 3000;
 app.listen(port, () =>
   console.log(`Express-demo is listening on port ${port}`)
