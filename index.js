@@ -4,12 +4,14 @@ const Joi = require("joi");
 const app = express();
 app.use(express.json()); // middleware for handling JSON parsing of request body
 
+// this array contains all courses objects
 const courses = [
   { id: 1, name: "course1 - JavaScript" },
   { id: 2, name: "course2 - SQL" },
   { id: 3, name: "course3 - React" },
 ];
 
+// input validation schema for course object
 const courseSchema = Joi.object({
   name: Joi.string().min(2).required(),
 });
@@ -37,10 +39,12 @@ app.get("/api/courses/:id", (req, res) => {
 });
 
 app.post("/api/courses", (req, res) => {
+  // validates the input against schema
   const result = courseSchema.validate(req.body);
   if (result.error)
     return res.status(400).send(result.error.details[0].message);
 
+  // no error i.e. input is validated. Update the database and return the newly created course object
   const newCourse = { ...req.body, id: courses.length + 1 };
   courses.push(newCourse);
   console.log(courses);
