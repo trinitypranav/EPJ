@@ -12,13 +12,18 @@ app.get("/", (req, res) => {
 });
 
 app.get("/api/courses", (req, res) => {
+  const query = req.query;
+  if (query) {
+    const result = courses.filter((course) => course.name.includes(query.name));
+    res.status(200).send(result);
+  }
   res.status(200).send(courses);
 });
 
 app.get("/api/courses/:id", (req, res) => {
   const id = req.params.id;
   const course = courses.find((course) => course.id === parseInt(id));
-  if (!course) res.status(404).send(`Course with ${id} was not found`);
+  if (!course) res.status(404).send(`Course with ID ${id} was not found`);
 
   res.status(200).send(course);
 });
