@@ -22,9 +22,9 @@ app.get("/", (req, res) => {
 
 app.get("/api/courses", (req, res) => {
   const query = req.query;
-  if (query) {
+  if (query.name) {
     const result = courses.filter((course) => course.name.includes(query.name));
-    res.status(200).send(result);
+    return res.status(200).send(result);
   }
   res.status(200).send(courses);
 });
@@ -49,6 +49,20 @@ app.post("/api/courses", (req, res) => {
   courses.push(newCourse);
   console.log(courses);
   res.status(201).send(newCourse);
+});
+
+app.put("/api/courses/:id", (req, res) => {
+  const id = req.params.id;
+  const courseIndex = courses.findIndex((course) => course.id === parseInt(id));
+  if (courseIndex === -1)
+    return res.status(404).send(`Course with ID ${id} was not found`);
+
+  const { error } = courseSchema.validate(req.body);
+  if (error) return res.status(400).send(`Bad Request`);
+
+  courses[courseIndex] = { ...courses[courseIndex], ...req.body };
+  console.log(courses);
+  res.status(200).send(`Course with ID ${id} has been updated`);
 });
 
 const port = process.env.PORT || 3000;
