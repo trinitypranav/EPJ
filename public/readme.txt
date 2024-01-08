@@ -1,0 +1,1 @@
+This is a static file server by Express middleware Static when user tries to access http://localhost:3000/readme.txt
