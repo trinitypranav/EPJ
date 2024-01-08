@@ -1,78 +1,25 @@
 const express = require("express"); // returns a function to create a backend/ web app
-const Joi = require("joi");
+const courses = require("./routes/courses");
+const home = require("./routes/home");
+const genres = require("./routes/genres");
+const logger = require("./middlewares/logger");
+const helmet = require("helmet");
+const morgan = require("morgan");
 
 const app = express();
-app.use(express.json()); // middleware for handling JSON parsing of request body
+app.use(express.json()); // middleware for parsing request body JSON into JS object and adding it into req.body
+app.use(express.urlencoded({ extended: true })); // parsing urlencoded data in the request body. Sent by client in case of form submit
+app.use(express.static("public")); // serve static files from public folder
+app.use(logger); // custom middleware logger
+app.use(helmet()); // third-party middleware for securing Express apps by adding HTTP response headers
+app.use(morgan("tiny")); // HTTP request logger middleware for node.js i.e. GET /api/courses 200 106 - 1.043 ms
 
-// this array contains all courses objects
-const courses = [
-  { id: 1, name: "course1 - JavaScript" },
-  { id: 2, name: "course2 - SQL" },
-  { id: 3, name: "course3 - React" },
-];
+// Routers
+app.use("/api/courses", courses);
+app.use("/", home);
+app.use("/api/genres", genres);
 
-// input validation schema for course object
-const courseSchema = Joi.object({
-  name: Joi.string().min(2).required(),
-});
-
-app.get("/", (req, res) => {
-  res.send("Hello, Welcome to Express Demo app");
-});
-
-app.get("/api/courses", (req, res) => {
-  const query = req.query;
-  if (query.name) {
-    const result = courses.filter((course) => course.name.includes(query.name));
-    return res.status(200).send(result);
-  }
-  res.status(200).send(courses);
-});
-
-app.get("/api/courses/:id", (req, res) => {
-  const id = req.params.id;
-  const course = courses.find((course) => course.id === parseInt(id));
-  if (!course)
-    return res.status(404).send(`Course with ID ${id} was not found`);
-
-  res.status(200).send(course);
-});
-
-app.post("/api/courses", (req, res) => {
-  // validates the input against schema
-  const result = courseSchema.validate(req.body);
-  if (result.error)
-    return res.status(400).send(result.error.details[0].message);
-
-  // no error i.e. input is validated. Update the database and return the newly created course object
-  const newCourse = { ...req.body, id: courses.length + 1 };
-  courses.push(newCourse);
-  console.log(courses);
-  res.status(201).send(newCourse);
-});
-
-app.put("/api/courses/:id", (req, res) => {
-  const id = req.params.id;
-  const courseIndex = courses.findIndex((course) => course.id === parseInt(id));
-  if (courseIndex === -1)
-    return res.status(404).send(`Course with ID ${id} was not found`);
-
-  const { error } = courseSchema.validate(req.body);
-  if (error) return res.status(400).send(`Bad Request`);
-
-  courses[courseIndex] = { ...courses[courseIndex], ...req.body };
-  console.log(courses);
-  res.status(200).send(`Course with ID ${id} has been updated`);
-});
-
-app.delete("/api/courses/:id", (req, res) => {
-  const id = req.params.id;
-  const courseIndex = courses.findIndex((course) => course.id === parseInt(id));
-  if (courseIndex === -1)
-    return res.status(404).send(`Course with ID ${id} was not found`);
-
-  res.status(200).send(courses.splice(courseIndex, 1));
-});
+console.log(app.get("env")); // if not defined, it returns 'development' by default
 
 const port = process.env.PORT || 3000;
 app.listen(port, () =>
