@@ -5,6 +5,9 @@ const genres = require("./routes/genres");
 const logger = require("./middlewares/logger");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const dotenv = require("dotenv").config(); // loads env vars from .env into process.env object
+// console.log("what is this dotenv", dotenv);//{ parsed: { mongodb_url: 'mongodb://something' } }
+require("./configs/mongodbConfig");
 
 const app = express();
 app.use(express.json()); // middleware for parsing request body JSON into JS object and adding it into req.body
@@ -19,7 +22,8 @@ app.use("/api/courses", courses);
 app.use("/", home);
 app.use("/api/genres", genres);
 
-console.log(app.get("env")); // if not defined, it returns 'development' by default
+console.log("Running Environment: ", app.get("env")); // if not defined, it returns 'development' by default
+// console.log(process.env);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () =>
