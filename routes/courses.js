@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
+const Course = require("../models/courseModel");
 
 // this array contains all courses objects
 const courses = [
@@ -32,16 +33,22 @@ router.get("/:id", (req, res) => {
   res.status(200).send(course);
 });
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   // validates the input against schema
   const result = courseSchema.validate(req.body);
   if (result.error)
     return res.status(400).send(result.error.details[0].message);
 
   // no error i.e. input is validated. Update the database and return the newly created course object
-  const newCourse = { ...req.body, id: courses.length + 1 };
-  courses.push(newCourse);
-  console.log(courses);
+  // const newCourse = { ...req.body, id: courses.length + 1 };
+  // courses.push(newCourse);
+  // console.log(courses);
+
+  const newCourse = new Course(req.body);
+  console.log(newCourse);
+  const response = await newCourse.save();
+  console.log(response);
+
   res.status(201).send(newCourse);
 });
 
