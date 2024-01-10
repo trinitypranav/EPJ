@@ -1,14 +1,17 @@
+// external frameworks
 const express = require("express"); // returns a function to create a backend/ web app
+const helmet = require("helmet");
+const morgan = require("morgan");
+const dotenv = require("dotenv").config(); // loads env vars from .env into process.env object. console.log("what is this dotenv", dotenv);//{ parsed: { mongodb_url: 'mongodb://something' } }
+
+// internal modules
+require("./configs/mongodbConfig");
+const logger = require("./middlewares/logger");
 const courses = require("./routes/courses");
 const home = require("./routes/home");
 const genres = require("./routes/genres");
-const logger = require("./middlewares/logger");
-const helmet = require("helmet");
-const morgan = require("morgan");
-const dotenv = require("dotenv").config(); // loads env vars from .env into process.env object
-// console.log("what is this dotenv", dotenv);//{ parsed: { mongodb_url: 'mongodb://something' } }
-require("./configs/mongodbConfig");
 
+// Express app setup
 const app = express();
 app.use(express.json()); // middleware for parsing request body JSON into JS object and adding it into req.body
 app.use(express.urlencoded({ extended: true })); // parsing urlencoded data in the request body. Sent by client in case of form submit
