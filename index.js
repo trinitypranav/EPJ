@@ -10,6 +10,7 @@ const logger = require("./middlewares/logger");
 const courses = require("./routes/courses");
 const home = require("./routes/home");
 const genres = require("./routes/genres");
+const users = require("./routes/users");
 
 // Express app setup
 const app = express();
@@ -24,6 +25,7 @@ app.use(morgan("tiny")); // HTTP request logger middleware for node.js i.e. GET 
 app.use("/api/courses", courses);
 app.use("/", home);
 app.use("/api/genres", genres);
+app.use("/api/users", users);
 
 console.log("Running Environment: ", app.get("env")); // if not defined, it returns 'development' by default
 // console.log(process.env);
