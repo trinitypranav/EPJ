@@ -32,7 +32,12 @@ router.post("/register", async (req, res) => {
     user.password = await bcrypt.hash(user.password, salt);
     await user.save();
 
-    res.status(201).send(_.pick(user, ["_id", "name", "email"]));
+    const token = user.generateAuthToken(); // method is added on userModel mongoose schema
+
+    res
+      .header("x-auth-token", token)
+      .status(201)
+      .send(_.pick(user, ["_id", "name", "email"]));
   } catch (error) {
     console.log(error);
   }
@@ -55,7 +60,8 @@ router.post("/login", async (req, res) => {
     if (!validPassword)
       return res.status(400).send("Invalid email or password");
 
-    res.send(true);
+    const token = user.generateAuthToken();
+    res.send(token);
   } catch (error) {
     console.log(error);
   }
