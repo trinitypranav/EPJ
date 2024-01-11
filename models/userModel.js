@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 
 // we can also use enum if we have a set of values
 const userDocumentSchema = new mongoose.Schema({
@@ -22,5 +23,11 @@ const userDocumentSchema = new mongoose.Schema({
     require: true,
   },
 });
+
+// decoded = {_id:"", iat:""} i at means the time at which the token is generated. To find the age of token
+userDocumentSchema.methods.generateAuthToken = function () {
+  const token = jwt.sign({ _id: user._id }, process.env.jwtKey); // Never push this to github. Always store in env file
+  return token;
+};
 
 module.exports = mongoose.model("user", userDocumentSchema);
