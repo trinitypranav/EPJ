@@ -1,4 +1,5 @@
 const auth = require("../middlewares/auth");
+const admin = require("../middlewares/admin");
 const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
@@ -53,7 +54,8 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+// only admin can delete genre. Passing 2 middlewares - first auth and then admin
+router.delete("/:id", [auth, admin], async (req, res) => {
   try {
     const deletedDocument = await Genre.findByIdAndDelete(req.params.id);
     res.status(200).send(deletedDocument);

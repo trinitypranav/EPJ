@@ -22,11 +22,15 @@ const userDocumentSchema = new mongoose.Schema({
     maxLength: 1024,
     require: true,
   },
+  isAdmin: Boolean,
 });
 
-// decoded = {_id:"", iat:""} i at means the time at which the token is generated. To find the age of token
+// decoded = {_id:"", iat:"", isAdmin:value} i at means the time at which the token is generated. To find the age of token
 userDocumentSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({ _id: this._id }, process.env.jwtKey); // Never push this to github. Always store in env file
+  const token = jwt.sign(
+    { _id: this._id, isAdmin: this.isAdmin },
+    process.env.jwtKey
+  ); // Never push this to github. Always store in env file
   return token;
 };
 
