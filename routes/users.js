@@ -1,3 +1,4 @@
+const auth = require("../middlewares/auth"); // authorization, not authentication
 const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
@@ -14,6 +15,11 @@ const userRegisterSchema = Joi.object({
 const userLoginSchema = Joi.object({
   email: Joi.string().min(2).max(55).required().email(),
   password: Joi.string().min(2).max(55).required(),
+});
+
+router.get("/me", auth, async (req, res) => {
+  const user = await User.findById(req.user._id).select("-password");
+  res.status(200).send(user);
 });
 
 router.post("/register", async (req, res) => {
@@ -42,6 +48,12 @@ router.post("/register", async (req, res) => {
     console.log(error);
   }
 });
+
+// no need to implement logout api on server
+// On frontend, just clear the jwt token
+// We don't store this token on server
+// never store tokens on server. It is meant only for clients.
+// if you want to store on server, encrypt it. Never store in plain text.
 
 router.post("/login", async (req, res) => {
   try {
