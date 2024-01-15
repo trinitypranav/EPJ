@@ -26,7 +26,7 @@ const userDocumentSchema = new mongoose.Schema({
 
 // decoded = {_id:"", iat:""} i at means the time at which the token is generated. To find the age of token
 userDocumentSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({ _id: user._id }, process.env.jwtKey); // Never push this to github. Always store in env file
+  const token = jwt.sign({ _id: this._id }, process.env.jwtKey); // Never push this to github. Always store in env file
   return token;
 };
 
