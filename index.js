@@ -3,6 +3,7 @@ const express = require("express"); // returns a function to create a backend/ w
 const helmet = require("helmet");
 const morgan = require("morgan");
 const dotenv = require("dotenv").config(); // loads env vars from .env into process.env object. console.log("what is this dotenv", dotenv);//{ parsed: { mongodb_url: 'mongodb://something' } }
+const error = require("./middlewares/error");
 
 // internal modules
 require("./configs/mongodbConfig");
@@ -26,6 +27,9 @@ app.use("/api/courses", courses);
 app.use("/", home);
 app.use("/api/genres", genres);
 app.use("/api/users", users);
+
+// efficient error handling - error middleware
+app.use(error); // passing error handling middleware which sits at the end of request processing queue
 
 console.log("Running Environment: ", app.get("env")); // if not defined, it returns 'development' by default
 // console.log(process.env);

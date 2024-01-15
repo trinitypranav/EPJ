@@ -10,12 +10,12 @@ const genreSchema = Joi.object({
   movies: Joi.array(),
 });
 
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
-    const result = await Genre.find();
+    const result = await Genre.find().sort("name");
     res.status(200).send(result);
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 });
 router.get("/:id", async (req, res) => {
