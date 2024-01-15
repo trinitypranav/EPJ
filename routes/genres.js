@@ -1,3 +1,4 @@
+const auth = require("../middlewares/auth");
 const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
@@ -25,7 +26,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   try {
     const { error } = genreSchema.validate(req.body);
     if (error) {
