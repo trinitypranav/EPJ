@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const genreDocumentSchema = new mongoose.Schema({
   name: {
     type: String,
-    minLength: 2,
+    minLength: 5,
+    maxLength: 50,
     require: true,
   },
   movies: {
