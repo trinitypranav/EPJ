@@ -1,6 +1,31 @@
 const express = require("express");
 const router = express.Router();
 const fetch = require("cross-fetch");
+//suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=
+
+http: router.get("/getSuggestions/:id", async (req, res) => {
+  console.log(
+    "called /getSuggestions",
+    "http://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q="
+  );
+
+  console.log(req.params.id);
+  const URL =
+    "https://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=" +
+    req.params.id;
+
+  const data = await fetch(URL, {
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+    },
+  });
+  const json = await data.json();
+  console.log(json);
+  res.send(json[1]);
+});
 
 router.get("/getAllRestaurants", async (req, res) => {
   console.log(
