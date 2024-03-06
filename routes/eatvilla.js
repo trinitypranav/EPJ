@@ -1,9 +1,35 @@
 const express = require("express");
 const router = express.Router();
 const fetch = require("cross-fetch");
-//suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=
+const Stripe = require("stripe")(process.env.stripe_key);
+//http://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=
 
-http: router.get("/getSuggestions/:id", async (req, res) => {
+router.post("/make-payment", async (req, res) => {
+  try {
+    const { amount } = req.body;
+    // console.log(token);
+
+    const paymentIntent = await Stripe.paymentIntents.create({
+      amount,
+      currency: "INR",
+    });
+
+    const transactionId = paymentIntent.client_secret;
+
+    res.send({
+      success: true,
+      message: "Payment successful",
+      data: transactionId,
+    });
+  } catch (err) {
+    res.send({
+      success: false,
+      message: err.message,
+    });
+  }
+});
+
+router.get("/getSuggestions/:id", async (req, res) => {
   console.log(
     "called /getSuggestions",
     "http://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q="
