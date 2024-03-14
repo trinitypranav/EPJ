@@ -1,6 +1,4 @@
 module.exports = function (req, res) {
-  // auth middleware updates request with user object
-  // we want to make use of it in this middleware for checking if an user is an admin
   if (!req.user.isAdmin) return res.status(403).send("Access denied.");
   next();
 };
